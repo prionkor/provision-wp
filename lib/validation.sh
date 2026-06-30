@@ -61,15 +61,32 @@ validate_commands() {
 
 validate_system() {
 
-    info "Validating system..."
+	info "Validating system..."
 
-    validate_os
+	validate_os
 
-    validate_commands
+	validate_commands
 
 }
 
 require_command() {
-    local cmd="$1"
-    command -v "$cmd" >/dev/null 2>&1 || die "Required command '$cmd' not found."
+	local cmd="$1"
+	command -v "$cmd" >/dev/null 2>&1 || die "Required command '$cmd' not found."
+}
+
+validate_configuration() {
+
+	info "Validating configuration..."
+
+	[[ -n "${DOMAIN:-}" ]] || die "DOMAIN is not set"
+	[[ -n "${SITE_PATH:-}" ]] || die "SITE_PATH is not set"
+	[[ -n "${DB_NAME:-}" ]] || die "DB_NAME is not set"
+	[[ -n "${DB_USER:-}" ]] || die "DB_USER is not set"
+	[[ -n "${DB_PASS:-}" ]] || die "DB_PASS is not set"
+	[[ -n "${DB_HOST:-}" ]] || die "DB_HOST is not set"
+	[[ -n "${PHP_SOCKET:-}" ]] || die "PHP_SOCKET is not set"
+	[[ -n "${WEB_SERVER:-}" ]] || die "WEB_SERVER is not set"
+
+	success "Configuration validated"
+
 }
