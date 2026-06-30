@@ -112,23 +112,23 @@ prompt_password() {
 
 	while true; do
 
-		printf "%s: " "$message"
+		printf "%s: " "$message" >&2
 		read -rs value1
-		echo
+		echo >&2
 
 		[[ -n "$value1" ]] || continue
 
-		printf "Confirm %s: " "$message"
+		printf "Confirm %s: " "$message" >&2
 		read -rs value2
-		echo
+		echo >&2
 
 		if [[ "$value1" == "$value2" ]]; then
-			echo "$value1"
+			printf "%s\n" "$value1"
 			return 0
-		else
-			error "Passwords do not match. Please try again."
-			echo
 		fi
+
+		error "Passwords do not match. Please try again."
+		echo >&2
 
 	done
 }
