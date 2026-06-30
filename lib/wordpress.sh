@@ -7,7 +7,7 @@ collect_site_information() {
 	DOMAIN="$(prompt "Domain Name")"
 	SSL_ADMIN_EMAIL="$(prompt "SSL Admin Email")"
 
-	WP_TITLE="$(prompt "Site Title")"
+	WP_SITE_TITLE="$(prompt "Site Title")"
 
 	WP_ADMIN_USER="$(prompt "Admin Username")"
 	WP_ADMIN_PASSWORD="$(prompt_password "Admin Password")"
@@ -72,7 +72,7 @@ install_wordpress() {
 	wp core install \
 		--path="$SITE_PATH" \
 		--url="https://${DOMAIN}" \
-		--title="$WP_TITLE" \
+		--title="$WP_SITE_TITLE" \
 		--admin_user="$WP_ADMIN_USER" \
 		--admin_password="$WP_ADMIN_PASSWORD" \
 		--admin_email="$WP_ADMIN_EMAIL" \
