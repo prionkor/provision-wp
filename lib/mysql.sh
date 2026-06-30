@@ -11,7 +11,7 @@ collect_database_information() {
 
 	DB_NAME="$(prompt "Database Name")"
 	DB_USER="$(prompt "Database User")"
-	DB_PASSWORD="$(prompt_password "Database User Password")"
+	DB_PASS="$(prompt_password "Database User Password")"
 
 }
 
@@ -92,7 +92,7 @@ create_database_user() {
 
 	mysql_exec <<EOF
 CREATE USER '${DB_USER}'@'%'
-IDENTIFIED BY '${DB_PASSWORD}';
+IDENTIFIED BY '${DB_PASS}';
 EOF
 
     register_cleanup \
