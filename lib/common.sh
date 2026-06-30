@@ -5,59 +5,59 @@
 ########################################
 
 if [[ -t 1 ]]; then
-    RED="\033[0;31m"
-    GREEN="\033[0;32m"
-    YELLOW="\033[1;33m"
-    BLUE="\033[0;34m"
-    BOLD="\033[1m"
-    NC="\033[0m"
+	RED="\033[0;31m"
+	GREEN="\033[0;32m"
+	YELLOW="\033[1;33m"
+	BLUE="\033[0;34m"
+	BOLD="\033[1m"
+	NC="\033[0m"
 else
-    RED=""
-    GREEN=""
-    YELLOW=""
-    BLUE=""
-    BOLD=""
-    NC=""
+	RED=""
+	GREEN=""
+	YELLOW=""
+	BLUE=""
+	BOLD=""
+	NC=""
 fi
 
 ########################################
 # Logging
 ########################################
 
-log(){
-    mkdir -p "$(dirname "$LOG_FILE")"
-    echo "$(date '+%F %T') $*" >> "$LOG_FILE"
+log() {
+	mkdir -p "$(dirname "$LOG_FILE")"
+	echo "$(date '+%F %T') $*" >>"$LOG_FILE"
 }
 
 info() {
-    echo -e "${BLUE}➜${NC} $*"
-    log "[INFO] $*"
+	echo -e "${BLUE}➜${NC} $*"
+	log "[INFO] $*"
 }
 
 success() {
-    echo -e "${GREEN}✓${NC} $*"
-    log "[ OK ] $*"
+	echo -e "${GREEN}✓${NC} $*"
+	log "[ OK ] $*"
 }
 
 warning() {
-    echo -e "${YELLOW}⚠${NC} $*"
-    log "[WARN] $*"
+	echo -e "${YELLOW}⚠${NC} $*"
+	log "[WARN] $*"
 }
 
 error() {
-    echo -e "${RED}✗${NC} $*" >&2
-    log "[FAIL] $*"
+	echo -e "${RED}✗${NC} $*" >&2
+	log "[FAIL] $*"
 }
 
 die() {
-    error "$*"
-    log "[EXIT] Installation aborted."
-    exit 1
+	error "$*"
+	log "[EXIT] Installation aborted."
+	exit 1
 }
 
 print_banner() {
 
-cat <<'EOF'
+	cat <<'EOF'
 
 ============================================================
             WordPress Site Installer
@@ -79,38 +79,47 @@ EOF
 
 prompt() {
 
-    local message="$1"
-    local value
+	local message="$1"
+	local value
 
-    while true; do
-        read -rp "$message: " value
+	while true; do
+		read -rp "$message: " value
 
-        [[ -n "$value" ]] && break
-    done
+		[[ -n "$value" ]] && break
+	done
 
-    echo "$value"
+	echo "$value"
 }
 
-# 
-# Uses 
-# 
+#
+# Uses
+#
 # WP_ADMIN_PASSWORD=$(prompt_password "Admin Password")
 
 prompt_password() {
 
-    local message="$1"
-    local value
+	local message="$1"
+	local value1
+	local value2
 
-    while true; do
+	while true; do
 
-        read -srp "$message: " value
-        echo
+		read -srp "$message: " value1
+		echo
 
-        [[ -n "$value" ]] && break
+		[[ -n "$value1" ]] || continue
 
-    done
+		read -srp "Confirm $message: " value2
+		echo
 
-    echo "$value"
+		if [[ "$value1" == "$value2" ]]; then
+			echo "$value1"
+			return 0
+		else
+			error "Passwords do not match. Please try again."
+		fi
+
+	done
 }
 
 # if ask_yes_no "Continue?"
@@ -119,41 +128,40 @@ prompt_password() {
 # fi
 ask_yes_no() {
 
-    local question="$1"
-    local default="${2:-Y}"
+	local question="$1"
+	local default="${2:-Y}"
 
-    local answer
+	local answer
 
-    while true; do
+	while true; do
 
-        read -rp "$question [$default/n]: " answer
+		read -rp "$question [$default/n]: " answer
 
-        answer="${answer:-$default}"
+		answer="${answer:-$default}"
 
-        case "${answer,,}" in
+		case "${answer,,}" in
 
-            y|yes)
-                return 0
-                ;;
+		y | yes)
+			return 0
+			;;
 
-            n|no)
-                return 1
-                ;;
+		n | no)
+			return 1
+			;;
 
-        esac
+		esac
 
-    done
+	done
 
 }
 
 separator() {
-    printf '%*s\n' "${COLUMNS:-60}" '' | tr ' ' '-'
+	printf '%*s\n' "${COLUMNS:-60}" '' | tr ' ' '-'
 }
 
 trim() {
-    local s="$1"
-    s="${s#"${s%%[![:space:]]*}"}"
-    s="${s%"${s##*[![:space:]]}"}"
-    printf '%s' "$s"
+	local s="$1"
+	s="${s#"${s%%[![:space:]]*}"}"
+	s="${s%"${s##*[![:space:]]}"}"
+	printf '%s' "$s"
 }
-
