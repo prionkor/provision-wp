@@ -104,7 +104,6 @@ prompt() {
 # Uses
 #
 # WP_ADMIN_PASSWORD=$(prompt_password "Admin Password")
-
 prompt_password() {
 
 	local message="$1"
@@ -113,12 +112,14 @@ prompt_password() {
 
 	while true; do
 
-		read -srp "$message: " value1
+		printf "%s: " "$message"
+		read -rs value1
 		echo
 
 		[[ -n "$value1" ]] || continue
 
-		read -srp "Confirm $message: " value2
+		printf "Confirm %s: " "$message"
+		read -rs value2
 		echo
 
 		if [[ "$value1" == "$value2" ]]; then
@@ -126,6 +127,7 @@ prompt_password() {
 			return 0
 		else
 			error "Passwords do not match. Please try again."
+			echo
 		fi
 
 	done
