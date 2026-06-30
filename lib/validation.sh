@@ -90,3 +90,36 @@ validate_configuration() {
 	success "Configuration validated"
 
 }
+
+confirm_installation() {
+
+	separator
+
+	echo "Installation Summary"
+	echo
+
+	echo "Domain            : $DOMAIN"
+	echo "Site Path         : $SITE_PATH"
+	echo "Web Server        : $WEB_SERVER"
+	echo "PHP Version       : $PHP_VERSION"
+	echo "PHP Socket        : $PHP_SOCKET"
+	echo
+
+	echo "Database Host     : $DB_HOST"
+	echo "Database Port     : $DB_PORT"
+	echo "Database Name     : $DB_NAME"
+	echo "Database User     : $DB_USER"
+	echo
+
+	echo "WordPress Title   : $WP_SITE_TITLE"
+	echo "Admin Username    : $WP_ADMIN_USER"
+	echo "Admin Email       : $WP_ADMIN_EMAIL"
+	echo "SSL Email         : $SSL_ADMIN_EMAIL"
+	echo
+
+	separator
+
+	if ! ask_yes_no "Continue with installation?"; then
+		die "Installation cancelled."
+	fi
+}
