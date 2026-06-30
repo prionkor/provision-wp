@@ -36,7 +36,7 @@ DB_PORT="3306"
 
 DB_NAME=""
 DB_USER=""
-DB_PASSWORD=""
+DB_PASS=""
 
 DB_SSL="false"
 

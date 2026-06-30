@@ -4,8 +4,8 @@ collect_database_information() {
 
 	info "Database Configuration"
 
-	DB_HOST="$(prompt "Database Host")"
-	DB_PORT="$(prompt "Database Port")"
+	DB_HOST="$(prompt "Database Host (localhost)")"
+	DB_PORT="$(prompt "Database Port (3306)")"
 	DB_ADMIN_USER="$(prompt "Database Admin User")"
 	DB_ADMIN_PASSWORD="$(prompt_password "Database Admin Password")"
 
