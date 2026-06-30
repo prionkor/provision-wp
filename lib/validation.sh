@@ -85,7 +85,7 @@ validate_configuration() {
 	[[ -n "${DB_PASS:-}" ]] || die "DB_PASS is not set"
 	[[ -n "${DB_HOST:-}" ]] || die "DB_HOST is not set"
 	[[ -n "${PHP_SOCKET:-}" ]] || die "PHP_SOCKET is not set"
-	[[ -n "${WEB_SERVER:-}" ]] || die "WEB_SERVER is not set"
+	[[ -n "${WEBSERVER:-}" ]] || die "WEBSERVER is not set"
 
 	success "Configuration validated"
 
