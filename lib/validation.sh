@@ -100,7 +100,7 @@ confirm_installation() {
 
 	echo "Domain            : $DOMAIN"
 	echo "Site Path         : $SITE_PATH"
-	echo "Web Server        : $WEB_SERVER"
+	echo "Web Server        : $WEBSERVER"
 	echo "PHP Version       : $PHP_VERSION"
 	echo "PHP Socket        : $PHP_SOCKET"
 	echo
