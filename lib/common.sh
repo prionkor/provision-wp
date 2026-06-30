@@ -78,15 +78,24 @@ EOF
 # DOMAIN=$(prompt "Domain")
 
 prompt() {
-
 	local message="$1"
+	local default_value="$2"
 	local value
 
-	while true; do
+	# Display the default value in brackets if it exists
+	if [[ -n "$default_value" ]]; then
+		read -rp "$message [$default_value]: " value
+	else
 		read -rp "$message: " value
+	fi
 
-		[[ -n "$value" ]] && break
-	done
+	# Trim leading and trailing whitespace from the user's input
+	value=$(echo "$value" | xargs)
+
+	# If the user pressed enter without typing, use the default value
+	if [[ -z "$value" ]]; then
+		value="$default_value"
+	fi
 
 	echo "$value"
 }
