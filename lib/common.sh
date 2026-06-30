@@ -79,7 +79,7 @@ EOF
 
 prompt() {
 	local message="$1"
-	local default_value="$2"
+	local default_value="${2:-}"
 	local value
 
 	# Display the default value in brackets if it exists
