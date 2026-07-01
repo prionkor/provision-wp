@@ -87,8 +87,14 @@ validate_configuration() {
 	[[ -n "${PHP_SOCKET:-}" ]] || die "PHP_SOCKET is not set"
 	[[ -n "${WEBSERVER:-}" ]] || die "WEBSERVER is not set"
 
-	success "Configuration validated"
+	# validate_domain
+	# validate_site_path
+	# validate_php
+	# validate_webserver
+	validate_database
+	# validate_wordpress
 
+	success "Configuration validated"
 }
 
 confirm_installation() {
@@ -122,4 +128,87 @@ confirm_installation() {
 	if ! ask_yes_no "Continue with installation?"; then
 		die "Installation cancelled."
 	fi
+}
+
+validate_database() {
+
+	info "Validating database connection..."
+
+	mysql \
+		-h "$DB_HOST" \
+		-P "$DB_PORT" \
+		-u "$DB_ADMIN_USER" \
+		-p"$DB_ADMIN_PASSWORD" \
+		-e "SELECT 1;" >/dev/null ||
+		die "Unable to connect to MySQL."
+
+	success "Successfully connected to MySQL."
+
+	local test_db="provisionwp_test_db_$RANDOM"
+	local test_user="provisionwp_test_user_$RANDOM"
+	local test_pass
+	local user_exists=0
+
+	test_pass="$(openssl rand -hex 16)"
+
+	info "Validating database privileges..."
+
+	mysql \
+		-h "$DB_HOST" \
+		-P "$DB_PORT" \
+		-u "$DB_ADMIN_USER" \
+		-p"$DB_ADMIN_PASSWORD" \
+		-e "CREATE DATABASE \`$test_db\`;" >/dev/null ||
+		die "Unable to create database."
+
+	if mysql \
+		-h "$DB_HOST" \
+		-P "$DB_PORT" \
+		-u "$DB_ADMIN_USER" \
+		-p"$DB_ADMIN_PASSWORD" \
+		-Nse "SELECT EXISTS(
+			SELECT 1
+			FROM mysql.user
+			WHERE User='$test_user'
+			  AND Host='localhost'
+		);" | grep -q '^1$'; then
+
+		user_exists=1
+
+	else
+
+		mysql \
+			-h "$DB_HOST" \
+			-P "$DB_PORT" \
+			-u "$DB_ADMIN_USER" \
+			-p"$DB_ADMIN_PASSWORD" \
+			-e "CREATE USER '$test_user'@'localhost' IDENTIFIED BY '$test_pass';" >/dev/null ||
+			die "Unable to create database user."
+
+	fi
+
+	mysql \
+		-h "$DB_HOST" \
+		-P "$DB_PORT" \
+		-u "$DB_ADMIN_USER" \
+		-p"$DB_ADMIN_PASSWORD" \
+		-e "GRANT ALL PRIVILEGES ON \`$test_db\`.* TO '$test_user'@'localhost';" >/dev/null ||
+		die "Unable to grant database privileges."
+
+	mysql \
+		-h "$DB_HOST" \
+		-P "$DB_PORT" \
+		-u "$DB_ADMIN_USER" \
+		-p"$DB_ADMIN_PASSWORD" \
+		-e "DROP DATABASE \`$test_db\`;" >/dev/null
+
+	[[ "$user_exists" -eq 1 ]] || mysql \
+		-h "$DB_HOST" \
+		-P "$DB_PORT" \
+		-u "$DB_ADMIN_USER" \
+		-p"$DB_ADMIN_PASSWORD" \
+		-e "DROP USER '$test_user'@'localhost';" >/dev/null
+
+	success "Database administrator has sufficient privileges."
+
 }
